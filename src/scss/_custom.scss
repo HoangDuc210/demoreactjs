@@ -1,0 +1,28 @@
+.posts{
+    background: #fff;
+    padding: rem(15);
+    .box-table{
+        border: solid 1px #ccc;
+        border-radius: rem(10);
+        overflow: hidden;
+    }
+    .table{
+            margin-bottom: 0;
+            border-collapse: collapse;
+            width: 100%;
+     
+        th{
+            background: #ccc;
+            font-weight: 600;
+            width: 33.3333%;
+        }
+        td{
+            background: #fff !important;
+        }
+        
+    }
+    .btn-add{
+        font-weight: 600;
+        color: rgb(0, 70, 200);
+    }
+}

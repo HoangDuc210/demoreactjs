@@ -128,31 +128,33 @@ const Home = () => {
                     </form>
 
                     <div className="d-flex justify-content-end mb-3">
-                        <CButton className={"btn"} onClick={() => setModal(true)}>Add post</CButton>
+                        <CButton className={"btn btn-add"} onClick={() => setModal(true)}>Add post</CButton>
                     </div>
 
                     <CRow>
                         <CCol xl={12}>
 
-                            <CDataTable
-                                items={posts}
-                                fields={[
-                                    { key: 'title', _classes: 'font-weight-bold' },
-                                    { key: 'username', _classes: 'font-weight-bold' },
-                                    { key: 'createdAt', _classes: 'font-weight-bold' }
+                            <div className='box-table mb-3'>
+                                <CDataTable
+                                    items={posts}
+                                    fields={[
+                                        { key: 'title' },
+                                        { key: 'username' },
+                                        { key: 'createdAt' }
 
-                                ]}
-                                hover
-                                striped
-                                itemsPerPage={5}
-                                activePage={page}
-                            />
+                                    ]}
+                                    hover
+                                    striped
+                                    itemsPerPage={10}
+                                    activePage={page}
+                                />
+                            </div>
 
                             {posts.length > 5 ?
                                 <CPagination
                                     activePage={page}
                                     onActivePageChange={pageChange}
-                                    pages={Math.ceil(posts.length / 5)}
+                                    pages={Math.ceil(posts.length / 10)}
                                     doubleArrows={false}
                                     align="center"
                                 />
