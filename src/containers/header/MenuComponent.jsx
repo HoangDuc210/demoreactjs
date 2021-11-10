@@ -1,38 +1,34 @@
 import { CLink } from '@coreui/react';
 import React from 'react';
-import menu from './menuheader';
+import _nav from './menuheader';
 
 function Menu(props) {
 
-    
+
     return (
         <>
             <div className='menu'>
                 <ul>
-                    {menu.map((m, i) => {
+                    {_nav.map((nav, index) => {
+                        return (
+                            <li key={index}>
+                                <CLink to={nav.route} title={nav.name}>{nav.name}</CLink>
+                                {nav._children !== undefined ?
+                                    <ul>
 
-                        return m.route && (
-                            <>
-                                <li key={i}><CLink to={m.route} title={m.name}>{m.name}</CLink>
-                                    {m._children !== undefined ?
+                                        {nav._children.map((c, i) => {
+                                            return (
+                                                <li key={i}>
+                                                    <CLink to={c.to} title={c.name}>{c.name}</CLink>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul> : ''
+                                }
+                            </li>
 
-                                        <ul>
-                                            {m._children.map((mu, u) => {
-                                                return (
-                                                    <>
-                                                        <li key={u}><CLink to={mu.route} title={mu.name}>{mu.name}</CLink></li>
-                                                    </>
-                                                )
-                                            })}
-                                        </ul>
-
-                                        : ''}
-                                </li>
-                            </>
-
-                        )
+                        );
                     })}
-
                 </ul>
             </div>
         </>

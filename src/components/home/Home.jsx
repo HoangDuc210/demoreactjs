@@ -1,203 +1,118 @@
-import React, { useState, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-import {
-    CCol,
-    CDataTable,
-    CRow,
-    CPagination,
-    CContainer,
-    CButton,
-    CForm,
-    CModal,
-    CModalHeader,
-    CModalTitle,
-    CModalBody,
-    CModalFooter,
-    CFormGroup
-} from '@coreui/react'
 import axios from 'axios';
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ToastContainer, toast } from 'react-toastify';
-import { injectStyle } from "react-toastify/dist/inject-style";
+import React, { useEffect, useState } from 'react'
+import Slideshow from '../slideshow/Slideshow'
+import { CLink } from '@coreui/react';
+import StyleHair from '../stylehair/StyleHair';
 
-if (typeof window !== "undefined") {
-    injectStyle();
-}
-const validationSchema = yup.object().shape({
-    title: yup.string().trim().required('Please enter a title!!!').max(225, "Title exceeds 225 characters!!!"),
-    content: yup.string().trim().required('Please enter content!!!').max(10000, "Content exceeds 10000 characters!!!"),
-    username: yup.string().trim().required('Please enter username!!!').max(100, "Content exceeds 100 characters!!!")
-});
-
-const Home = () => {
-
-    const [posts, setPosts] = useState([]);
-    const [modal, setModal] = useState(false)
-    const [nameSearch, setNameSearch] = useState("");
-
-    const history = useHistory()
-    const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
-    const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
-    const [page, setPage] = useState(currentPage)
-
-    const pageChange = newPage => {
-        currentPage !== newPage && history.push(`/?page=${newPage}`)
-    }
-
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
-        resolver: yupResolver(validationSchema)
-
-    });
+function Home() {
+    const [products, setProducts] = useState([]);
 
 
-    const getPost = () => {
-        axios.get("https://5f2e1546808569001692380c.mockapi.io/dataAPI/posts")
-            .then(res => {
-                setPosts(res.data);
 
-            })
-            .catch((error) => {
-
-            })
+    const getProuducts = () => {
+        axios.get("https://5f2e1546808569001692380c.mockapi.io/dataAPI/products").then(res => {
+            setProducts(res.data);
+        });
     }
 
     useEffect(() => {
-        getPost()
+        getProuducts();
     }, []);
 
-    useEffect(() => {
-        currentPage !== page && setPage(currentPage)
-    }, [currentPage, page])
 
 
-    const onSubmit = (data) => {
-        axios.post("https://5f2e1546808569001692380c.mockapi.io/dataAPI/posts", data)
-            .then(res => {
-                toast.success("Add post success!");
-                setTimeout(() => {
-                    setModal(false)
-                    setValue("title", '');
-                    setValue("content", '');
-                    setValue("username", '');
-                    getPost();
-                }, 1000);
-
-            })
-            .catch((error) => {
-                toast.error("Add post error!");
-            });
-    }
-
-    const search = (e) => {
-        e.preventDefault();
-        history.push(`/?search=${nameSearch}`)
-        axios.get("https://5f2e1546808569001692380c.mockapi.io/dataAPI/posts")
-            .then(res => {
-                const newSearch = res.data.filter((post) => {
-                    return Object.values(post).join(" ").toLowerCase().includes(nameSearch.toLowerCase());
-                })
-
-                setPosts(newSearch);
-
-            })
-            .catch((error) => {
-
-            })
-
-    }
-
-    const cancel = () => {
-        setModal(false);
-        setValue("title", '');
-        setValue("content", '');
-        setValue("username", '');
-    }
     return (
         <>
-            <CContainer className="mt-3">
-                <div className='posts'>
-                    <form onSubmit={search} className='row mb-5'>
-                        <CCol xl={11}>
-                            <input type='text' className="form-control" placeholder='Enter text to search' onChange={(e) => setNameSearch(e.target.value)} />
-                        </CCol>
-                        <CCol xl={1}>
-                            <CButton className="btn btn-primary" type='submit'>Search</CButton>
-                        </CCol>
-                    </form>
-
-                    <div className="d-flex justify-content-end mb-3">
-                        <CButton className={"btn btn-add"} onClick={() => setModal(true)}>Add post</CButton>
-                    </div>
-
-                    <CRow>
-                        <CCol xl={12}>
-
-                            <div className='box-table mb-3'>
-                                <CDataTable
-                                    items={posts}
-                                    fields={[
-                                        { key: 'title' },
-                                        { key: 'username' },
-                                        { key: 'createdAt' }
-
-                                    ]}
-                                    hover
-                                    striped
-                                    itemsPerPage={10}
-                                    activePage={page}
-                                />
+            <Slideshow></Slideshow>
+            <div className='introduction'>
+                <div className='container mt-5 mb-5'>
+                    <div className='row'>
+                        <div className='col-6'>
+                            <CLink href="" className='box-img' title=''>
+                                <img src={"https://image.freepik.com/free-vector/barber-shop-vertical-banners-set_1284-11893.jpg"} alt="" />
+                            </CLink>
+                        </div>
+                        <div className='col-6'>
+                            <div className='box-intro'>
+                                <h2 className='title'>Baber Anh Tran</h2>
+                                <div className='s-content'>
+                                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Distinctio laboriosam accusamus quia, cupiditate voluptas iste impedit doloribus officia cum mollitia ab in placeat nemo quis earum. Nam, aperiam. Qui, ea?</p>
+                                    <ul>
+                                        <li>Lorem, ipsum dolor sit amet consectetur</li>
+                                        <li>Lorem, ipsum dolor sit amet consectetur sit amet consectetur</li>
+                                        <li>Lorem, ipsum dolor sit amet consectetur sit amet consectetur</li>
+                                        <li>Lorem, ipsum dolor sit amet consectetur sit amet consectetur</li>
+                                    </ul>
+                                </div>
                             </div>
-
-                            {posts.length > 5 ?
-                                <CPagination
-                                    activePage={page}
-                                    onActivePageChange={pageChange}
-                                    pages={Math.ceil(posts.length / 10)}
-                                    doubleArrows={false}
-                                    align="center"
-                                />
-
-                                : ''}
-
-                        </CCol>
-                    </CRow>
+                        </div>
+                    </div>
                 </div>
-            </CContainer>
+            </div>
 
-            <CModal show={modal} onClose={setModal}>
-                <CForm onSubmit={handleSubmit(onSubmit)}>
-                    <CModalHeader closeButton>
-                        <CModalTitle className="text-center">Add a post</CModalTitle>
-                    </CModalHeader>
-                    <CModalBody className="text-center">
-                        <CFormGroup>
-                            <input type='text' name='title' className='form-control' placeholder='Post title' ref={register} />
-                            {errors.title && <p className="error">
-                                <i className="fa fa-exclamation-circle" aria-hidden="true"></i>
-                                {errors.title?.message}</p>}
-                        </CFormGroup>
-                        <CFormGroup>
-                            <textarea className='form-control' name='content' placeholder='Post content' ref={register} />
-                            {errors.content && <p className="error">
-                                <i className="fa fa-exclamation-circle" aria-hidden="true"></i>
-                                {errors.content?.message}</p>}
-                        </CFormGroup>
-                        <CFormGroup>
-                            <input type='text' name='username' className='form-control' placeholder='Post username' ref={register} />
-                            {errors.username && <p className="error">
-                                <i className="fa fa-exclamation-circle" aria-hidden="true"></i>
-                                {errors.username?.message}</p>}
-                        </CFormGroup>
-                    </CModalBody>
-                    <CModalFooter>
-                        <CButton color="primary" type='submit'>Submit</CButton>
-                        <CButton color="secondary" onClick={() => cancel()}>Cancel</CButton>
-                    </CModalFooter>
-                </CForm>
-            </CModal>
-            <ToastContainer autoClose={1000} />
+            <StyleHair></StyleHair>
+
+            <div className='pro bg-white pt-5 pb-5'>
+                <div className='container'>
+                    <p className='title_t text-center mb-3'>Sản phẩm dưỡng tóc dành cho nữ</p>
+                    <div className='row'>
+                        {products.map((pro, index) => {
+                            return (
+                                <div className='col-3 pl-2 pr-2 mb-3' key={index}>
+                                    <div className='pro-card'>
+                                        <CLink to={""} className={"box-img"} title={pro.name}>
+                                            <img src={pro.img} alt="" />
+                                        </CLink>
+                                        <div className='card-main mt-3'>
+                                            <h2 className='title'>
+                                                <CLink to={""} title={pro.name}>
+                                                    {pro.name}
+                                                </CLink>
+                                            </h2>
+                                            <div className='box-price'>
+                                                <p className='price'>{pro.price} đ</p>
+                                                <p className='proce_old'>{pro.price_old} đ</p>
+                                            </div>
+                                            <div className='short_content'>{pro.short_content}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
+
+            <div className='pro  pt-5 pb-5'>
+                <div className='container'>
+                    <p className='title_t text-center mb-3'>Sản phẩm cho nam</p>
+                    <div className='row'>
+                        {products.map((pro, index) => {
+                            return (
+                                <div className='col-3 pl-2 pr-2 mb-3' key={index}>
+                                    <div className='pro-card'>
+                                        <CLink to={""} className={"box-img"} title={pro.name}>
+                                            <img src={pro.img} alt="" />
+                                        </CLink>
+                                        <div className='card-main mt-3'>
+                                            <h2 className='title'>
+                                                <CLink to={""} title={pro.name}>
+                                                    {pro.name}
+                                                </CLink>
+                                            </h2>
+                                            <div className='box-price'>
+                                                <p className='price'>{pro.price} đ</p>
+                                                <p className='proce_old'>{pro.price_old} đ</p>
+                                            </div>
+                                            <div className='short_content'>{pro.short_content}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
         </>
 
     )
